@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>Loan Calculator</title>
+		<link type="text/css" href="styles/jquery-ui.css" rel="stylesheet" />
+		<script type="text/javascript" src="js/jquery-3.5.1.js"></script>
+		<script type="text/javascript" src="js/jquery-ui.js"></script>
+		<script type="text/javascript">
+		$(function() {
+			$( "#slider-amount" ).slider({
+				value:2000,
+				min: 200,
+				max: 25000,
+				step: 10,
+				slide: function( event, ui ) {
+					$( "#amount" ).val(ui.value );
+					calLoan();
+				}
+			
+			});
+			$( "#amount" ).val($( "#slider-amount" ).slider( "value" ) );
+			
+			$( "#slider-time" ).slider({
+				value:36,
+				min: 12,
+				max: 60,
+				step: 1,
+				slide: function( event, ui ) {
+					$( "#time" ).val(ui.value);
+					calLoan();
+				}
+			});
+			$( "#time" ).val($( "#slider-time" ).slider( "value" ) );
+			
+			$( "#slider-rate" ).slider({
+				value:6,
+				min: 1,
+				max: 15,
+				step: 1,
+				slide: function( event, ui ) {
+					$( "#rate" ).val(ui.value);
+					calLoan();
+				}
+			});
+			$( "#rate" ).val($( "#slider-rate" ).slider( "value" ) );			
+		});
+		
+		function calLoan() {
+		
+		var interest = $("#rate").val()/100;
+		var months = $("#time").val();
+		var amount = $("#amount").val();
+		var providerFees = 294;
+	
+		$( "#yearsMonths" ).text( Math.round(months / 12) + " Years " + months % 12 + " Months")
+		
+		var n = months;
+		var i = interest / 12;		
+		var i_to_n = Math.pow((i + 1), n);
+
+		var p = amount * ((i * i_to_n) / (i_to_n - 1));
+		var m = Math.round(p * 100) / 100;
+		var t = m * n + providerFees;
+		var ti = (m * n) - amount;
+								
+		$("#result").val(m);  
+		$("#totalResult").val(t.toFixed(2)); 
+		$("#interest").val(ti.toFixed(2));  
+		
+		}
+		$(document).ready(function(){
+		calLoan();
+		});
+		
+		</script>
+		<style type="text/css">
+			.loancalc {background: #eee; width: 800px; padding: 10px !important; overflow: auto;}
+			.number{border: 0; color:#f6931f; font-weight:bold; background: #eee; width: 100px;}
+			.width10 {width: 8px !Important;}
+			.results {float: right; width: 250px}
+			.sliders {float: left; width: 500px}
+		</style>
+	</head>
+	<body>
+<div class="loancalc">
+
+<div class="sliders">
+<p>How much would you like to borrow? <span class="number">�</span><input type="text" id="amount" class="number" /></p>
+<div id="slider-amount"></div>
+<p>Interest Rate <input type="text" id="rate" class="number width10" /><span class="number">%</span></p>
+<div id="slider-rate"></div>
+<p>How long for? (Min 1 year, Max 5 Years) <span class="number" id="yearsMonths"></span> <input type="hidden" id="time"  class="number" /></p>
+<div id="slider-time"></div>
+</div>
+
+<div class="results">
+<p>Total Interest <span class="number">�</span><input type="text" id="interest" class="number" /></p>
+<p>Provider Fees (one-time payment) <span class="number">�294.00</span></p>
+<p>Monthly payment <span class="number">�</span><input type="text" id="result" class="number" /></p>
+<p>Total amount payable (inc provider Fees) <span class="number">�</span><input type="text" id="totalResult"  class="number" /></p>
+</div>
+
+</div><!-- End calc -->
+	</body>
+</html>
